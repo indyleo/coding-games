@@ -1,0 +1,25 @@
+#!/bin/env bash
+
+echo "Welcome to the Dice Rolling Simulator!"
+
+# Function to roll the die
+roll_die() {
+    echo "Rolling the die..."
+    result=$(( RANDOM % 6 + 1 ))
+    echo "You rolled a $result!"
+}
+
+# Main game loop
+while true; do
+    read -p "Press Enter to roll the die or type 'quit' to exit: " choice
+    case $choice in
+        quit)
+            echo "Thanks for playing!"
+            exit 0
+            ;;
+        *)
+            roll_die
+            ;;
+    esac
+done
+

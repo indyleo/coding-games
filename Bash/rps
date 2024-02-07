@@ -1,0 +1,47 @@
+#!/bin/env bash
+
+echo "Welcome to the Rock, Paper, Scissors game!"
+
+# Function to generate computer's choice
+generate_computer_choice() {
+    choices=("rock" "paper" "scissors")
+    computer_choice=${choices[$RANDOM % ${#choices[@]}]}
+}
+
+# Function to determine the winner
+determine_winner() {
+    player_choice=$1
+    if [ $player_choice == $computer_choice ]; then
+        echo "It's a tie!"
+    elif [ $player_choice == "rock" ] && [ $computer_choice == "scissors" ]; then
+        echo "You win! Rock smashes scissors."
+    elif [ $player_choice == "paper" ] && [ $computer_choice == "rock" ]; then
+        echo "You win! Paper covers rock."
+    elif [ $player_choice == "scissors" ] && [ $computer_choice == "paper" ]; then
+        echo "You win! Scissors cut paper."
+    else
+        echo "You lose! $computer_choice beats $player_choice."
+    fi
+}
+
+# Main game loop
+while true; do
+    read -p "Enter your choice (rock/paper/scissors): " player_choice
+    case $player_choice in
+        rock|paper|scissors)
+            generate_computer_choice
+            echo "You chose: $player_choice"
+            echo "Computer chose: $computer_choice"
+            determine_winner $player_choice
+            ;;
+        *)
+            echo "Invalid choice! Please enter rock, paper, or scissors."
+            ;;
+    esac
+
+    read -p "Play again? (yes/no): " play_again
+    if [ $play_again != "yes" ]; then
+        echo "Thanks for playing!"
+        break
+    fi
+done

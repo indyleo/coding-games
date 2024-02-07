@@ -1,0 +1,131 @@
+#!/bin/env bash
+
+# Function to print the hangman
+print_hangman() {
+    case $1 in
+        0)  echo " _______"
+            echo "|       |"
+            echo "|       O"
+            echo "|      /|\\"
+            echo "|      / \\"
+            echo "|"
+            ;;
+        1)  echo " _______"
+            echo "|       |"
+            echo "|       O"
+            echo "|      /|\\"
+            echo "|      /"
+            echo "|"
+            ;;
+        2)  echo " _______"
+            echo "|       |"
+            echo "|       O"
+            echo "|      /|\\"
+            echo "|"
+            echo "|"
+            ;;
+        3)  echo " _______"
+            echo "|       |"
+            echo "|       O"
+            echo "|       |"
+            echo "|"
+            echo "|"
+            ;;
+        4)  echo " _______"
+            echo "|       |"
+            echo "|       O"
+            echo "|"
+            echo "|"
+            echo "|"
+            ;;
+        5)  echo " _______"
+            echo "|       |"
+            echo "|"
+            echo "|"
+            echo "|"
+            echo "|"
+            ;;
+        *)  ;;
+    esac
+}
+
+# Check if words file exists
+if [ ! -f "words.txt" ]; then
+    echo "Error: Words file not found."
+    exit 1
+fi
+
+# Read words from file into an array
+wordlist=($(cat "./words.txt"))
+
+# Check if the words array is not empty
+if [ ${#wordlist[@]} -eq 0 ]; then
+    echo "Error: No words found in the file."
+    exit 1
+fi
+
+# Select a random word from the array
+word=${wordlist[$(($RANDOM % ${#wordlist[@]}))]}
+
+# Initialize variables
+wordlist=("hangman" "computer" "keyboard" "programming" "bash")
+word=${wordlist[$(($RANDOM % ${#wordlist[@]}))]}
+wordlen=${#word}
+guesses=""
+attempts=6
+correct_guesses=0
+
+# Print initial message
+echo "Welcome to Hangman!"
+echo "Guess the word by entering one letter at a time."
+
+# Main game loop
+while [ $attempts -gt 0 ] && [ $correct_guesses -lt $wordlen ]; do
+    # Print hangman
+    print_hangman $attempts
+
+    # Print word with underscores for unknown letters
+    for ((i = 0; i < $wordlen; i++)); do
+        letter="${word:i:1}"
+        if [[ "$guesses" == *"$letter"* ]]; then
+            echo -n "$letter "
+        else
+            echo -n "_ "
+        fi
+    done
+    echo
+
+    # Ask for user input
+    read -p "Enter your guess: " guess
+    if [ ${#guess} -ne 1 ]; then
+        echo "Please enter only one letter."
+        continue
+    elif [[ ! $guess =~ [a-zA-Z] ]]; then
+        echo "Please enter a valid letter."
+        continue
+    elif [[ "$guesses" == *"$guess"* ]]; then
+        echo "You've already guessed that letter."
+        continue
+    fi
+
+    # Add guess to guesses list
+    guesses="$guesses$guess"
+
+    # Check if guess is correct
+    if [[ "$word" == *"$guess"* ]]; then
+        echo "Correct guess!"
+        correct_guesses=$((correct_guesses + 1))
+    else
+        echo "Incorrect guess!"
+        attempts=$((attempts - 1))
+    fi
+done
+
+# Print final message
+if [ $correct_guesses -eq $wordlen ]; then
+    echo "Congratulations! You've guessed the word: $word"
+else
+    echo "Sorry, you've run out of attempts. The word was: $word"
+    print_hangman 0
+fi
+
