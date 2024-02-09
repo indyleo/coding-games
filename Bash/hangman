@@ -68,7 +68,6 @@ fi
 word=${wordlist[$(($RANDOM % ${#wordlist[@]}))]}
 
 # Initialize variables
-wordlist=("hangman" "computer" "keyboard" "programming" "bash")
 word=${wordlist[$(($RANDOM % ${#wordlist[@]}))]}
 wordlen=${#word}
 guesses=""
