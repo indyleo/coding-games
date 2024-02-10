@@ -22,7 +22,7 @@ PADDLE_WIDTH, PADDLE_HEIGHT = 10, 100
 BALL_SPEED_X = 7
 BALL_SPEED_Y = 7
 PADDLE_SPEED = 8
-SQUARE_SIZE = 20
+SQUARE_SIZE = 50
 
 # Define objects
 ball = pygame.Rect(WIDTH//2 - BALL_RADIUS, HEIGHT//2 - BALL_RADIUS, BALL_RADIUS * 2, BALL_RADIUS * 2)
@@ -100,6 +100,10 @@ def display_menu():
     menu_sub = menu_font.render("Press ENTER to play", True, BLACK)
     menu_sub_quit = menu_font.render("Press Q to quit", True, BLACK)
     menu_sub_controls = menu_font.render("Press C to controls", True, BLACK)
+        
+    # Draw the grid background
+    WIN.fill(WHITE)
+    draw_grid(WIN)
 
     menu_running = True
     while menu_running:
@@ -117,7 +121,6 @@ def display_menu():
                     display_controls()
                     
 
-        WIN.fill(WHITE)
         WIN.blit(menu_title, (WIDTH//2 - menu_title.get_width()//2, HEIGHT//2 - menu_title.get_height()))
         WIN.blit(menu_sub, (WIDTH//2 - menu_sub.get_width()//2, HEIGHT//2))
         WIN.blit(menu_sub_quit, (WIDTH//2 - menu_sub_quit.get_width()//2, HEIGHT//2 + menu_sub.get_height()))
@@ -129,6 +132,10 @@ def game_loop(BALL_SPEED_X, BALL_SPEED_Y):
     # Initialize player score
     player1_score = 0
     player2_score = 0
+    
+    # Define player paddles
+    player1_paddle = pygame.Rect(50, HEIGHT//2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
+    player2_paddle = pygame.Rect(WIDTH - 50 - PADDLE_WIDTH, HEIGHT//2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
 
     # Set up clock
     clock = pygame.time.Clock()
@@ -176,6 +183,8 @@ def game_loop(BALL_SPEED_X, BALL_SPEED_Y):
             ball.center = (WIDTH//2, HEIGHT//2)
             BALL_SPEED_X *= random.choice((1, -1))
             player2_score += 1
+            player1_paddle = pygame.Rect(50, HEIGHT//2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
+            player2_paddle = pygame.Rect(WIDTH - 50 - PADDLE_WIDTH, HEIGHT//2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
             window_edge_sound.play()
 
         # Ball out of bounds - Opponent Missed
@@ -183,6 +192,8 @@ def game_loop(BALL_SPEED_X, BALL_SPEED_Y):
             ball.center = (WIDTH//2, HEIGHT//2)
             BALL_SPEED_X *= random.choice((1, -1))
             player1_score += 1
+            player1_paddle = pygame.Rect(50, HEIGHT//2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
+            player2_paddle = pygame.Rect(WIDTH - 50 - PADDLE_WIDTH, HEIGHT//2 - PADDLE_HEIGHT//2, PADDLE_WIDTH, PADDLE_HEIGHT)
             window_edge_sound.play()
 
         # Draw everything
