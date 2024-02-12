@@ -77,6 +77,7 @@ def display_controls():
     running = True
     while running:
         WIN.fill(WHITE)
+        draw_grid(WIN)
         font = pygame.font.SysFont(None, 36)
         y = 100
         for text in controls_text:
@@ -93,6 +94,43 @@ def display_controls():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
                     return  # Return to main menu
+
+# Initialize player score
+player1_score = 0
+player2_score = 0
+
+win_screen = "Random Text"
+
+# Win Screen
+def display_win_screen():
+    if player1_score == 10: 
+        win_screen = "Player 1 Wins!"
+    elif player2_score == 10:
+        win_screen = "Player 2 Wins"
+    else: 
+        return
+
+    running = True
+    while running:
+        WIN.fill(WHITE)
+        draw_grid(WIN)
+        font = pygame.font.SysFont(None, 36)
+        y = 100
+        for text in win_screen:
+            text_surface = font.render(text, True, BLACK)
+            text_rect = text_surface.get_rect(center=(WIDTH//2, y))
+            WIN.blit(text_surface, text_rect)
+            y += 40
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    return  # Return to main menu
+
+
 # Menu function
 def display_menu():
     menu_font = pygame.font.SysFont(None, 50)
@@ -153,6 +191,9 @@ def game_loop(BALL_SPEED_X, BALL_SPEED_Y):
         if in_menu:  # Skip the game loop if in_menu is True
             continue        # Move player paddle
         
+        # win Screen
+        display_win_screen()
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and player1_paddle.top > 0:
             player1_paddle.y -= PADDLE_SPEED
