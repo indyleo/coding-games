@@ -73,7 +73,6 @@ def display_controls():
         "   Move Down: Down Arrow",
         "Back to Menu: Backspace"
     ]
-
     running = True
     while running:
         WIN.fill(WHITE)
@@ -99,28 +98,18 @@ def display_controls():
 player1_score = 0
 player2_score = 0
 
-win_screen = "Random Text"
-
-# Win Screen
-def display_win_screen():
-    if player1_score == 10: 
-        win_screen = "Player 1 Wins!"
-    elif player2_score == 10:
-        win_screen = "Player 2 Wins"
-    else: 
-        return
-
+def display_win_screen_p1():
+    win_text_p1 = "Player 1 Wins!"
     running = True
     while running:
         WIN.fill(WHITE)
         draw_grid(WIN)
-        font = pygame.font.SysFont(None, 36)
+        font = pygame.font.SysFont(None, 50)
         y = 100
-        for text in win_screen:
-            text_surface = font.render(text, True, BLACK)
-            text_rect = text_surface.get_rect(center=(WIDTH//2, y))
-            WIN.blit(text_surface, text_rect)
-            y += 40
+        # Render and display the win screen text
+        text_surface = font.render(win_text_p1, True, BLACK)
+        text_rect = text_surface.get_rect(center=(WIDTH//2, HEIGHT//2))
+        WIN.blit(text_surface, text_rect)
         pygame.display.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -128,8 +117,30 @@ def display_win_screen():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_BACKSPACE:
-                    return  # Return to main menu
+                    display_menu()
+                    running = False  # Break the loop and return to main menu
 
+def display_win_screen_p2():
+    win_text_p2 = "Player 2 Wins!"
+    running = True
+    while running:
+        WIN.fill(WHITE)
+        draw_grid(WIN)
+        font = pygame.font.SysFont(None, 50)
+        y = 100
+        # Render and display the win screen text
+        text_surface = font.render(win_text_p2, True, BLACK)
+        text_rect = text_surface.get_rect(center=(WIDTH//2, HEIGHT//2))
+        WIN.blit(text_surface, text_rect)
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    display_menu()
+                    running = False  # Break the loop and return to main menu
 
 # Menu function
 def display_menu():
@@ -191,8 +202,13 @@ def game_loop(BALL_SPEED_X, BALL_SPEED_Y):
         if in_menu:  # Skip the game loop if in_menu is True
             continue        # Move player paddle
         
-        # win Screen
-        display_win_screen()
+        # Check if a player has won
+        if player1_score == 10:
+            display_win_screen_p1()
+            continue  # Skip the rest of the game loop
+        elif player2_score == 10:
+            display_win_screen_p2()
+            continue  # Skip the rest of the game loop
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_w] and player1_paddle.top > 0:
